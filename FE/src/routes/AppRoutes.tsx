@@ -5,9 +5,11 @@ import PrivateRoutes from './PrivateRoutes';
 const AppRoutes: FC = () => {
   return (
     <>
-      <Routes>
-        <Route path="/*" element={<PrivateRoutes />} />
-      </Routes>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/*" element={<PrivateRoutes />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };
