@@ -22,7 +22,6 @@ export const authenticate = (
     // Send response and immediately exit the middleware
     return res.status(401).json({ message: 'Authentication required' });
   }
-
   const decoded = verifyToken(token);
 
   if (!decoded) {

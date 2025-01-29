@@ -1,13 +1,16 @@
 import React from 'react';
 import AppRoutes from './routes/AppRoutes';
 import { UserProvider } from './context/userContext';
+import { SpotifyProvider } from './context/spotifyContext';
 
 function App() {
-	return (
-		<UserProvider>
-			<AppRoutes />
-		</UserProvider>
-	);
+  return (
+    <SpotifyProvider>
+      <UserProvider>
+        <AppRoutes />
+      </UserProvider>
+    </SpotifyProvider>
+  );
 }
 
 export default App;

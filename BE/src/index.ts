@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import connectDB from './config/db'; // Import MongoDB connection
 import userRoutes from './routes/userRoutes';
+import playlistRoutes from './routes/playlistRoutes';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -30,6 +31,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/api/user', userRoutes);
+app.use('/api/playlist', playlistRoutes);
 
 // Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
