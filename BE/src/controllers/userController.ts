@@ -9,8 +9,7 @@ interface MyJwtPayload extends JwtPayload {
 
 export const getAllUsers = async () => {
   try {
-    const users = await User.find();
-    return users;
+   return await User.find();
   } catch (error) {
     throw new Error('Error fetching users');
   }
@@ -37,7 +36,7 @@ export const loginUser = async (req: Request, res: Response) => {
       { expiresIn: '1h' },
     );
 
-    res.json({ message: 'Login successful', token });
+    res.json({ message: 'Login successful',data : {user: {username: user.username, email: user.email, authToken: token}} , success: true });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -93,10 +92,13 @@ export const getUserByToken = async (req: Request, res: Response) => {
     }
     res.status(200).json({
       message: 'User fetched successfully',
-      username: user.username,
-      email: user.email,
+      success: true,
+      data: {
+        username: user.username,
+        email: user.email,
+      }
     });
   } catch (error) {
-    throw new Error('Invalid or expired token');
+    return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
