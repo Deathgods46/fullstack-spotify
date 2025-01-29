@@ -1,11 +1,12 @@
 import LandingPage from '../components/landingPage/LandingPage';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { DASHBOARD_PAGE, LANDING_PAGE, SEARCH_SONGS } from './routePages';
+import { Route, Routes, useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { DASHBOARD_PAGE, LANDING_PAGE, MY_PLAYLISTS, SEARCH_SONGS } from './routePages';
 import UserLandingPage from '../components/userLandingPage/UserLandingPage';
 import React, { useEffect } from 'react';
 import { useUserContext } from '../context/userContext';
 import SearchSongs from '../components/searchSongs/SearchSongs';
 import { Typography } from '@mui/material';
+import MyPlaylists from '../components/myPlaylists/MyPlaylists';
 
 const PrivateRoutes = () => {
 	const { user } = useUserContext();
@@ -25,7 +26,7 @@ const PrivateRoutes = () => {
 			<Route path={LANDING_PAGE} element={<LandingPage />} />
 			<Route path={DASHBOARD_PAGE} element={<UserLandingPage />}>
 				<Route path={SEARCH_SONGS} element={<SearchSongs />} />
-				{/*<Route path="/my-playlists" element={<MyPlaylists />} />*/}
+				<Route path={MY_PLAYLISTS} element={<MyPlaylists />} />
 				<Route
 					path={DASHBOARD_PAGE}
 					element={
@@ -35,6 +36,7 @@ const PrivateRoutes = () => {
 						</>
 					}
 				/>
+				<Route path="*" element={<Navigate to={DASHBOARD_PAGE} replace />} />
 			</Route>
 		</Routes>
 	);

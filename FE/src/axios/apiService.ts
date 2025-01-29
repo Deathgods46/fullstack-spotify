@@ -1,9 +1,11 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { AUTH_LOCAL_STORAGE_KEY } from '../constants/globalConstants';
 
 const apiClient = axios.create({
 	baseURL: process.env.REACT_APP_DATABASE_URL || 'http://localhost:3001/api',
 	headers: {
 		'Content-Type': 'application/json',
+		Authorization: `Bearer ${localStorage.getItem(AUTH_LOCAL_STORAGE_KEY)}`,
 	},
 });
 

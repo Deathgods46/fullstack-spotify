@@ -14,9 +14,28 @@ import { Search, LibraryMusic, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/userContext';
 import { HEADER_HEIGHT } from '../../constants/globalConstants';
-import { DASHBOARD_PAGE, SEARCH_SONGS } from '../../routes/routePages';
+import { DASHBOARD_PAGE, MY_PLAYLISTS, SEARCH_SONGS } from '../../routes/routePages';
 
 const drawerWidth = 240;
+
+const CommonListItem = ({
+	text,
+	urlNavigate,
+	Icon,
+}: {
+	urlNavigate: () => void;
+	text: string;
+	Icon: JSX.Element;
+}) => {
+	return (
+		<ListItem disablePadding>
+			<ListItemButton onClick={urlNavigate}>
+				<ListItemIcon>{Icon}</ListItemIcon>
+				<ListItemText primary={text} />
+			</ListItemButton>
+		</ListItem>
+	);
+};
 
 const Sidebar = () => {
 	const navigate = useNavigate();
@@ -41,32 +60,17 @@ const Sidebar = () => {
 			<Divider />
 
 			<List>
-				<ListItem disablePadding>
-					<ListItemButton onClick={() => navigate(DASHBOARD_PAGE)}>
-						<ListItemIcon>
-							<Home />
-						</ListItemIcon>
-						<ListItemText primary="Home" />
-					</ListItemButton>
-				</ListItem>
-
-				<ListItem disablePadding>
-					<ListItemButton onClick={() => navigate(SEARCH_SONGS)}>
-						<ListItemIcon>
-							<Search />
-						</ListItemIcon>
-						<ListItemText primary="Search Songs" />
-					</ListItemButton>
-				</ListItem>
-
-				<ListItem disablePadding>
-					<ListItemButton onClick={() => navigate('/my-playlists')}>
-						<ListItemIcon>
-							<LibraryMusic />
-						</ListItemIcon>
-						<ListItemText primary="My Playlists" />
-					</ListItemButton>
-				</ListItem>
+				<CommonListItem text="Home" urlNavigate={() => navigate(DASHBOARD_PAGE)} Icon={<Home />} />
+				<CommonListItem
+					text="Search Songs"
+					urlNavigate={() => navigate(SEARCH_SONGS)}
+					Icon={<Search />}
+				/>
+				<CommonListItem
+					text="My Playlists"
+					urlNavigate={() => navigate(MY_PLAYLISTS)}
+					Icon={<LibraryMusic />}
+				/>
 			</List>
 		</Drawer>
 	);
