@@ -11,6 +11,7 @@ const SongSchema: Schema = new Schema(
     title: { type: String, required: true },
     artist: { type: String, required: true },
     duration: { type: Number, required: true },
+    spotifySongId: {type: String, required: true}
   },
   { timestamps: true },
 );
