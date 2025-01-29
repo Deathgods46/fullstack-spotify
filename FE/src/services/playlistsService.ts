@@ -1,28 +1,55 @@
-import { get } from '../axios/apiService';
-import { ApiResponse } from '../types/apiTypes';
+import { get, post } from '../axios/apiService';
 
-const GET_PLAYLISTS_ENDPOINT = '/playlists/my';
+import {
+  AddSongToPlaylistResponse,
+  AddSongToPlaylistsPayload,
+  ApiResponse,
+} from '../types/apiTypes';
+import { addSongToPlaylist, getPlaylistsEndpoint } from '../api/apiRoutes';
+import { toast } from 'react-hot-toast';
 
 export interface Song {
-	songId: string;
-	songName: string;
-	duration: number; // Duration in seconds
+  songId: string;
+  songName: string;
+  duration: number; // Duration in seconds
 }
 
 export interface Playlist {
-	playlistName: string;
-	songs: Song[];
+  id: string;
+  playlistName: string;
+  songs: Song[];
 }
 
 export interface PlaylistResponse {
-	playlists: Playlist[];
+  playlists: Playlist[];
 }
 
-export const getMyPlaylists = async (): Promise<ApiResponse<PlaylistResponse>> => {
-	try {
-		const response = await get<ApiResponse<PlaylistResponse>>(GET_PLAYLISTS_ENDPOINT);
-		return response.data;
-	} catch (error) {
-		throw error;
-	}
+export const getMyPlaylists = async (
+  token: string,
+): Promise<ApiResponse<PlaylistResponse>> => {
+  try {
+    const response = await get<ApiResponse<PlaylistResponse>>(
+      getPlaylistsEndpoint,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addSongIdToPlaylists = async (
+  payload: AddSongToPlaylistsPayload,
+) => {
+  const response = await post<
+    ApiResponse<AddSongToPlaylistResponse>,
+    AddSongToPlaylistsPayload
+  >(addSongToPlaylist, payload);
+  if (response.data.success) {
+    toast.success(response.data.message);
+  }
 };

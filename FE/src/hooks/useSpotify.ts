@@ -3,10 +3,10 @@ import { useSpotifyContext } from '../context/spotifyContext';
 import axios from 'axios';
 import { get } from '../axios/apiService';
 import { SongsTypes } from '../types/songsTypes';
-const clientId: string = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-const clientSecret: string = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
 
 const useSpotify = () => {
+  const clientId: string = process.env.REACT_APP_SPOTIFY_CLIENT_ID!;
+  const clientSecret: string = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET!;
   const spotifyApi = new SpotifyWebApi();
   const { token, setToken } = useSpotifyContext();
 

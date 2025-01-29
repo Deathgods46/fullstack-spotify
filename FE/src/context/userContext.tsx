@@ -67,6 +67,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       fetchUser();
     } else {
       setLoadingUser(false);
+      localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY);
     }
   }, []);
 
