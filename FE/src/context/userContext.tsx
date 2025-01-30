@@ -17,6 +17,7 @@ interface UserContextValue {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   logOutUser: () => void;
   localStorageAuthToken: string | null;
+  setLocalStorageAuthToken: React.Dispatch<React.SetStateAction<string | null>>;
   loadingUser: boolean;
   fetchUser: () => void;
 }
@@ -75,12 +76,20 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     () => ({
       user,
       setUser,
+      setLocalStorageAuthToken,
       localStorageAuthToken,
       logOutUser,
       fetchUser,
       loadingUser,
     }),
-    [user, setUser, localStorageAuthToken, logOutUser, loadingUser],
+    [
+      user,
+      setUser,
+      localStorageAuthToken,
+      logOutUser,
+      loadingUser,
+      setLocalStorageAuthToken,
+    ],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

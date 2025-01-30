@@ -27,11 +27,10 @@ const LandingPage = () => {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const { setUser } = useUserContext();
+  const { setUser, setLocalStorageAuthToken } = useUserContext();
   const { initSpotify } = useSpotify();
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    console.log('Form submitted with data:', data);
     const { password, username } = data;
     const userInformation = await loginUser({
       password,
@@ -44,6 +43,7 @@ const LandingPage = () => {
         AUTH_LOCAL_STORAGE_KEY,
         userInformation.data.user.authToken,
       );
+      setLocalStorageAuthToken(userInformation.data.user.authToken);
     }
   };
 

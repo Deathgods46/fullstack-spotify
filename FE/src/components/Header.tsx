@@ -10,9 +10,12 @@ import {
 import { HEADER_HEIGHT } from '../constants/globalConstants';
 import { useUserContext } from '../context/userContext';
 import { useState } from 'react';
+import { LANDING_PAGE } from '../routes/routePages';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { user, logOutUser } = useUserContext();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,6 +56,7 @@ const Header = () => {
             onClick={() => {
               setAnchorEl(null);
               logOutUser();
+              navigate(LANDING_PAGE);
             }}
           >
             Logout

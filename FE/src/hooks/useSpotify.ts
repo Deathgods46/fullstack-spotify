@@ -49,7 +49,7 @@ const useSpotify = () => {
         },
       };
 
-      const response = await get<{ tracks: { items: SongsTypes[] } }>(
+      const response = await axios.get<{ tracks: { items: SongsTypes[] } }>(
         url,
         config,
       );
@@ -60,7 +60,34 @@ const useSpotify = () => {
     }
   };
 
-  return { spotifyApi, initSpotify, getSongsFromSearchQuery };
+  const getPlaylistTracksInformation = async (
+    tracks: string[],
+  ): Promise<SongsTypes[]> => {
+    try {
+      const url = 'https://api.spotify.com/v1/tracks';
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          ids: tracks.toString(),
+        },
+      };
+
+      const response = await axios.get(url, config);
+      return response.data.tracks;
+    } catch (error) {
+      console.error('Error fetching songs from Spotify:', error);
+      return [];
+    }
+  };
+
+  return {
+    spotifyApi,
+    initSpotify,
+    getSongsFromSearchQuery,
+    getPlaylistTracksInformation,
+  };
 };
 
 export default useSpotify;

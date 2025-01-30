@@ -1,11 +1,17 @@
-import { get, post } from '../axios/apiService';
+import { del, get, post } from '../axios/apiService';
 
 import {
-  AddSongToPlaylistResponse,
   AddSongToPlaylistsPayload,
   ApiResponse,
+  RemoveSongFromCurrentPlaylistPayload,
 } from '../types/apiTypes';
-import { addSongToPlaylist, getPlaylistsEndpoint } from '../api/apiRoutes';
+import {
+  addPlaylist,
+  addSongToPlaylist,
+  getPlaylistsEndpoint,
+  removePlaylist,
+  removeSongFromPlaylist,
+} from '../api/apiRoutes';
 import { toast } from 'react-hot-toast';
 
 export interface Song {
@@ -24,17 +30,12 @@ export interface PlaylistResponse {
   playlists: Playlist[];
 }
 
-export const getMyPlaylists = async (
-  token: string,
-): Promise<ApiResponse<PlaylistResponse>> => {
+export const getMyPlaylists = async (): Promise<
+  ApiResponse<PlaylistResponse>
+> => {
   try {
     const response = await get<ApiResponse<PlaylistResponse>>(
       getPlaylistsEndpoint,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
     return response.data;
   } catch (error) {
@@ -45,11 +46,67 @@ export const getMyPlaylists = async (
 export const addSongIdToPlaylists = async (
   payload: AddSongToPlaylistsPayload,
 ) => {
-  const response = await post<
-    ApiResponse<AddSongToPlaylistResponse>,
-    AddSongToPlaylistsPayload
-  >(addSongToPlaylist, payload);
+  const response = await post<ApiResponse<{}>, AddSongToPlaylistsPayload>(
+    addSongToPlaylist,
+    payload,
+  );
   if (response.data.success) {
     toast.success(response.data.message);
+  }
+};
+
+export const removeSongFromCurrentPlaylist = async (
+  payload: RemoveSongFromCurrentPlaylistPayload,
+) => {
+  const response = await del<{ success: boolean; message: string }>(
+    removeSongFromPlaylist,
+    {
+      data: payload,
+    },
+  );
+
+  if (response.data.success) {
+    toast.success(response.data.message);
+  } else {
+    toast.error('Something failed while deleting!');
+  }
+};
+
+export const handleDeletePlaylist = async (payload: { playlistId: string }) => {
+  if (!payload.playlistId) {
+    toast.error('Playlist Id is missing!');
+    return;
+  }
+  const response = await del<{ success: boolean; message: string }>(
+    removePlaylist,
+    { data: payload },
+  );
+
+  if (response.data.success) {
+    toast.success(response.data.message);
+  } else {
+    toast.error('Something failed while deleting!');
+  }
+};
+
+export const handleCreatePlaylist = async (payload: {
+  playlistName: string;
+}) => {
+  if (!payload.playlistName) {
+    toast.error('Playlist Name is missing!');
+    return;
+  }
+
+  const response = await post<
+    ApiResponse<{}>,
+    {
+      playlistName: string;
+    }
+  >(addPlaylist, { playlistName: payload.playlistName });
+
+  if (response.data.success) {
+    toast.success(response.data.message);
+  } else {
+    toast.error('Something failed while creating a new playlist!');
   }
 };

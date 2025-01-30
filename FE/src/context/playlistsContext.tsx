@@ -13,6 +13,7 @@ interface PlaylistsContextType {
   playlists: Playlist[];
   setPlaylists: React.Dispatch<React.SetStateAction<Playlist[]>>;
   fetchLatestPlaylists: () => Promise<void>;
+  loadingPlaylistsData: boolean;
 }
 
 // Create the context
@@ -29,11 +30,14 @@ export const PlaylistsProvider: React.FC<PlaylistsProviderProps> = ({
   children,
 }) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const { user, localStorageAuthToken } = useUserContext();
+  const [loadingPlaylistsData, setLoadingPlaylistsData] = useState(false);
+  const { user } = useUserContext();
 
   const fetchLatestPlaylists = async () => {
-    getMyPlaylists(localStorageAuthToken || '').then((data) => {
+    setLoadingPlaylistsData(true);
+    getMyPlaylists().then((data) => {
       setPlaylists(data.data.playlists);
+      setLoadingPlaylistsData(false);
     });
   };
 
@@ -45,7 +49,12 @@ export const PlaylistsProvider: React.FC<PlaylistsProviderProps> = ({
 
   return (
     <PlaylistsContext.Provider
-      value={{ playlists, setPlaylists, fetchLatestPlaylists }}
+      value={{
+        playlists,
+        setPlaylists,
+        fetchLatestPlaylists,
+        loadingPlaylistsData,
+      }}
     >
       {children}
     </PlaylistsContext.Provider>

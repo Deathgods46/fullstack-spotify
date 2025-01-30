@@ -1,4 +1,5 @@
 import { User } from './userTypes';
+import { Playlist } from '../services/playlistsService';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -26,4 +27,7 @@ export interface AddSongToPlaylistsPayload {
   playlistsId: string[];
 }
 
-export interface AddSongToPlaylistResponse {}
+export interface RemoveSongFromCurrentPlaylistPayload {
+  playlistId: string;
+  songId: string;
+}
