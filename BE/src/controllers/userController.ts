@@ -1,6 +1,6 @@
 import User from '../models/User';
 import bcrypt from 'bcryptjs';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 
 interface MyJwtPayload extends JwtPayload {
@@ -9,7 +9,7 @@ interface MyJwtPayload extends JwtPayload {
 
 export const getAllUsers = async () => {
   try {
-   return await User.find();
+    return await User.find();
   } catch (error) {
     throw new Error('Error fetching users');
   }
@@ -32,13 +32,27 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|\/|p|_3'!,
+      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3'!,
       { expiresIn: '1h' },
     );
 
-    res.json({ message: 'Login successful',data : {user: {username: user.username, email: user.email, authToken: token}} , success: true });
+    res.json({
+      message: 'Login successful',
+      data: {
+        user: { username: user.username, email: user.email, authToken: token },
+      },
+      success: true,
+    });
   } catch (error) {
     console.error('Login error:', error);
+    if (error instanceof TokenExpiredError) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: 'Token has expired, please login again',
+        });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -82,7 +96,7 @@ export const getUserByToken = async (req: Request, res: Response) => {
     const token = authorization!.split(' ')[1];
     const decoded = jwt.verify(
       token!,
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|\/|p|_3',
+      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
     ) as MyJwtPayload;
     const userId = decoded.id;
     const user = await User.findById(userId);
@@ -96,7 +110,7 @@ export const getUserByToken = async (req: Request, res: Response) => {
       data: {
         username: user.username,
         email: user.email,
-      }
+      },
     });
   } catch (error) {
     return res.status(401).json({ message: 'Invalid or expired token' });
