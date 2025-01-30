@@ -102,11 +102,14 @@ const PlaylistData = () => {
       return;
     }
     if (currentSelectedPlaylistData) {
-      getPlaylistTracksInformation(
-        currentSelectedPlaylistData!.songs.map((song) => song.songId),
-      ).then((response) => {
-        setSongsInformation(response);
-      });
+      const songIds = currentSelectedPlaylistData!.songs.map(
+        (song) => song.songId,
+      );
+      if (songIds.length) {
+        getPlaylistTracksInformation(songIds).then((response) => {
+          setSongsInformation(response);
+        });
+      }
     } else {
       toast.error('Your playlist does not exist!');
       navigate(MY_PLAYLISTS);
