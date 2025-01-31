@@ -29,7 +29,7 @@ const Header = () => {
     <AppBar position="sticky" sx={{ height: `${HEADER_HEIGHT}px` }}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          My App
+          Spotify Music Management System
         </Typography>
         {user ? (
           <IconButton
