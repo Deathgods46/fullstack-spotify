@@ -153,7 +153,7 @@ const SearchSongs = () => {
           Add <b>{selectedSong?.name}</b> To Your Playlists
         </DialogTitle>
         <DialogContent>
-          <Box>
+          <Box sx={{display: 'flex', flexDirection: 'column'}}>
             {playlists.length > 0 ? (
               playlists.map((playlist) => (
                 <FormControlLabel

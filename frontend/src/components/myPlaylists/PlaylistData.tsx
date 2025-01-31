@@ -61,6 +61,10 @@ const PlaylistData = () => {
     setOpenAddCard(true);
   };
 
+  const otherPlaylistsThanCurrent = useMemo(() => {
+    return playlists.filter((playlist) => playlist.id !== playlistId)
+  }, [playlistId])
+
   const handleCloseDialog = () => {
     setOpenAddCard(false);
     setOpenDeleteCard(false);
@@ -109,6 +113,8 @@ const PlaylistData = () => {
         getPlaylistTracksInformation(songIds).then((response) => {
           setSongsInformation(response);
         });
+      } else {
+        setSongsInformation([]);
       }
     } else {
       toast.error('Your playlist does not exist!');
@@ -207,23 +213,19 @@ const PlaylistData = () => {
         </DialogTitle>
         <DialogContent>
           <Box>
-            {playlists.length > 0 ? (
-              playlists.map((playlist) => {
-                if (playlist.id !== playlistId) {
-                  return (
-                    <FormControlLabel
-                      key={playlist.id}
-                      control={
-                        <Checkbox
-                          checked={selectedPlaylists.includes(playlist.id)}
-                          onChange={() => handleCheckboxChange(playlist.id)}
-                        />
-                      }
-                      label={playlist.playlistName}
+            {otherPlaylistsThanCurrent.length > 0 ? (
+              otherPlaylistsThanCurrent.map((playlist) =>
+                <FormControlLabel
+                  key={playlist?.id}
+                  control={
+                    <Checkbox
+                      checked={selectedPlaylists.includes(playlist?.id ?? '')}
+                      onChange={() => handleCheckboxChange(playlist?.id ?? '')}
                     />
-                  );
-                }
-              })
+                  }
+                  label={playlist?.playlistName}
+                />
+              )
             ) : (
               <Typography>
                 You do not have any playlists at the moment!
@@ -235,9 +237,11 @@ const PlaylistData = () => {
           <Button onClick={handleCloseDialog} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleAddToPlaylists} color="primary">
-            Add
-          </Button>
+          {otherPlaylistsThanCurrent.length > 0 &&
+            <Button onClick={handleAddToPlaylists} color="primary">
+              Add
+            </Button>
+          }
         </DialogActions>
       </Dialog>
 
