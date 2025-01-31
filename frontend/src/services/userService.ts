@@ -6,6 +6,7 @@ import { User } from '../types/userTypes';
 export const addUser = async (payload: RegisterPayload): Promise<ApiResponse<User>> => {
 	try {
 		const response = await post<ApiResponse<User>, RegisterPayload>(addUserEndpoint, payload);
+		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		throw error;

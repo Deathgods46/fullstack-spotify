@@ -22,17 +22,17 @@ export const loginUser = async (req: Request, res: Response) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+      return res.status(200).json({ message: 'User not found', success: false });
     }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid password' });
+      return res.status(200).json({ message: 'Invalid password', success: false });
     }
 
     const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3'!,
+      process.env.JWT_SECRET_KEY!,
       { expiresIn: '1h' },
     );
 
@@ -47,7 +47,7 @@ export const loginUser = async (req: Request, res: Response) => {
     console.error('Login error:', error);
     if (error instanceof TokenExpiredError) {
       return res
-        .status(401)
+        .status(201)
         .json({
           success: false,
           message: 'Token has expired, please login again',
@@ -63,12 +63,12 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already in use' });
+      return res.status(200).json({ message: 'Email already in use', success: false });
     }
 
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return res.status(400).json({ message: 'Username already in use' });
+      return res.status(200).json({ message: 'Username already in use', success: false });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -81,9 +81,15 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await newUser.save();
 
+    const token = jwt.sign(
+      { id: newUser._id, username: newUser.username, email: newUser.email },
+      process.env.JWT_SECRET_KEY!,
+      { expiresIn: '1h' },
+    );
+
     res
       .status(201)
-      .json({ message: 'User registered successfully', user: newUser });
+      .json({ message: 'User registered successfully', success: true, data: { username: newUser.username, email: newUser.email, authToken: token } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error registering user' });
@@ -96,7 +102,7 @@ export const getUserByToken = async (req: Request, res: Response) => {
     const token = authorization!.split(' ')[1];
     const decoded = jwt.verify(
       token!,
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
+      process.env.JWT_SECRET_KEY!,
     ) as MyJwtPayload;
     const userId = decoded.id;
     const user = await User.findById(userId);
@@ -113,6 +119,6 @@ export const getUserByToken = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
+    return res.status(201).json({ message: 'Invalid or expired token', success: false });
   }
 };

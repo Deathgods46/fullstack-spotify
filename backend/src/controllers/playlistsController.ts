@@ -14,7 +14,7 @@ export const getUserPlaylists = async (req: Request, res: Response) => {
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
+      process.env.JWT_SECRET_KEY!,
     ) as { id: string };
 
     if (!decoded.id) {
@@ -68,7 +68,7 @@ export const addSongToPlaylists = async (req: Request, res: Response) => {
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
+      process.env.JWT_SECRET_KEY!,
     ) as { id: string };
 
     if (!decoded.id) {
@@ -113,18 +113,18 @@ export const removeSongFromPlaylist = async (req: Request, res: Response) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Unauthorized', success: false });
+      return res.status(201).json({ message: 'Unauthorized', success: false });
     }
 
     const token = authHeader.split(' ')[1];
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
+      process.env.JWT_SECRET_KEY!,
     ) as { id: string };
 
     if (!decoded.id) {
-      return res.status(401).json({ message: 'Invalid token', success: false });
+      return res.status(201).json({ message: 'Invalid token', success: false });
     }
 
     const { songId, playlistId } = req.body;
@@ -136,7 +136,7 @@ export const removeSongFromPlaylist = async (req: Request, res: Response) => {
     );
 
     if (!playlist) {
-      return res.status(404).json({ message: 'Playlist not found.' });
+      return res.status(404).json({ message: 'Playlist not found.', success: false });
     }
 
     return res
@@ -146,7 +146,7 @@ export const removeSongFromPlaylist = async (req: Request, res: Response) => {
     console.error(error);
     if (error instanceof TokenExpiredError) {
       return res
-        .status(401)
+        .status(201)
         .json({
           success: false,
           message: 'Token has expired, please login again',
@@ -171,23 +171,23 @@ export const removePlaylist = async (req: Request, res: Response) => {
     try {
       decoded = jwt.verify(
         token,
-        process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
+        process.env.JWT_SECRET_KEY!,
       ) as { id: string };
     } catch (err) {
       return res
-        .status(401)
+        .status(201)
         .json({ message: 'Invalid or expired token', success: false });
     }
 
     if (!decoded || !decoded.id) {
-      return res.status(401).json({ message: 'Invalid token', success: false });
+      return res.status(201).json({ message: 'Invalid token', success: false });
     }
 
     const { playlistId } = req.body;
 
     if (!playlistId) {
       return res
-        .status(400)
+        .status(200)
         .json({ success: false, message: 'Playlist ID is required' });
     }
 
@@ -223,7 +223,7 @@ export const removePlaylist = async (req: Request, res: Response) => {
     console.error('Error during playlist deletion:', error);
     if (error instanceof TokenExpiredError) {
       return res
-        .status(401)
+        .status(201)
         .json({
           success: false,
           message: 'Token has expired, please login again',
@@ -241,7 +241,7 @@ export const handleCreatePlaylist = async (req: Request, res: Response) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Unauthorized', success: false });
+      return res.status(201).json({ message: 'Unauthorized', success: false });
     }
 
     const token = authHeader.split(' ')[1];
@@ -250,16 +250,16 @@ export const handleCreatePlaylist = async (req: Request, res: Response) => {
     try {
       decoded = jwt.verify(
         token,
-        process.env.JWT_SECRET_KEY || 'S0M3_$a|/|p|_3',
+        process.env.JWT_SECRET_KEY!,
       ) as { id: string };
     } catch (err) {
       return res
-        .status(401)
+        .status(201)
         .json({ message: 'Invalid or expired token', success: false });
     }
 
     if (!decoded || !decoded.id) {
-      return res.status(401).json({ message: 'Invalid token', success: false });
+      return res.status(201).json({ message: 'Invalid token', success: false });
     }
     const { playlistName } = req.body;
 
@@ -286,7 +286,7 @@ export const handleCreatePlaylist = async (req: Request, res: Response) => {
     console.error('Error during playlist creation:', error);
     if (error instanceof TokenExpiredError) {
       return res
-        .status(401)
+        .status(201)
         .json({
           success: false,
           message: 'Token has expired, please login again',

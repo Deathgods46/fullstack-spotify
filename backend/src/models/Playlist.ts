@@ -12,7 +12,7 @@ const PlaylistSchema: Schema = new Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     songs: [{ type: String }],
   },
-  { timestamps: true },
+  { timestamps: true, collection: "playlists" },
 );
 
 export default mongoose.model<IPlaylist>('playlists', PlaylistSchema);

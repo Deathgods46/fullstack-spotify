@@ -178,9 +178,11 @@ const SearchSongs = () => {
           <Button onClick={handleCloseDialog} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleAddToPlaylists} color="primary">
-            Add
-          </Button>
+          {playlists.length > 0 &&
+            <Button onClick={handleAddToPlaylists} color="primary">
+              Add
+            </Button>
+          }
         </DialogActions>
       </Dialog>
     </Box>
