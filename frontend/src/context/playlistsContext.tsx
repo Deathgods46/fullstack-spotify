@@ -36,7 +36,7 @@ export const PlaylistsProvider: React.FC<PlaylistsProviderProps> = ({
   const fetchLatestPlaylists = async () => {
     setLoadingPlaylistsData(true);
     getMyPlaylists().then((data) => {
-      setPlaylists(data.data.playlists);
+      setPlaylists(data.data?.playlists || []);
       setLoadingPlaylistsData(false);
     });
   };

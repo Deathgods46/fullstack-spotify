@@ -25,7 +25,7 @@ export const getUserPlaylists = async (req: Request, res: Response) => {
 
     if (!playlists.length) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: 'No playlists found', success: false });
     }
 
